@@ -32,6 +32,24 @@ abstract class CSVParserBase {
 		return $this->ProcessArray($array);
 	}
 	
+	public function ParseWithLimit($csvData,$start=0,$limit=10000) {
+		$array = null;
+		
+		if (($fh = fopen($csvData, "r"))) {
+			$i = 0;
+			while (($data = fgetcsv($fh, $this->MaxLenght, $this->Separator))) {
+				$i++;
+				if($i > $start && $i<($start+$limit)){
+					$array[] = $data;
+				}
+			}
+			fclose($fh);
+		} else {
+			throw new Exception("Cannot parse data", 1);
+		}
+		return $this->ProcessArray($array);
+	}
+	
 	protected abstract function ProcessArray($array);
 
 	protected function StripString($contents) {
